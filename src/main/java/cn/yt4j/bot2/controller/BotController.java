@@ -13,8 +13,13 @@ public class BotController {
 
     private final BlackGodBot blackGodBot;
 
-    @PostMapping
+    @PostMapping("gongbang")
     public void sendMessage(@RequestBody String message) {
         blackGodBot.sendMessage(message);
+    }
+
+    @PostMapping("报告")
+    public void sendBaoGaoMessage(@RequestBody String message) {
+        blackGodBot.sendBaoGaoMessage(message);
     }
 }

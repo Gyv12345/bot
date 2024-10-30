@@ -20,6 +20,10 @@ public class BlackGodBot implements SpringLongPollingBot, LongPollingSingleThrea
 
     private final String chatId = "-1002205757052";
 
+    private final String baogaoChatId="-1002152980524";
+
+    private final String qunzuChatId="-1002298376382";
+
     public BlackGodBot() {
         telegramClient = new OkHttpTelegramClient(getBotToken());
     }
@@ -31,17 +35,12 @@ public class BlackGodBot implements SpringLongPollingBot, LongPollingSingleThrea
             String message_text = update.getChannelPost().getText();
             long chat_id = update.getChannelPost().getChatId();
             log.info("Received from " + chat_id + ": " + message_text);
+        }
 
-            SendMessage message = SendMessage // Create a message object
-                    .builder()
-                    .chatId(chat_id)
-                    .text(message_text)
-                    .build();
-            try {
-                telegramClient.execute(message); // Sending our message object to user
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+        if (update.hasMessage() && update.getMessage().isSuperGroupMessage()) {
+            String groupMessage = update.getMessage().getText(); // 获取群组消息内容
+            long chatId = update.getMessage().getChatId(); // 获取群组的 chatId
+            log.info("Received from " + chatId + ": " + groupMessage);
         }
     }
 
@@ -68,6 +67,33 @@ public class BlackGodBot implements SpringLongPollingBot, LongPollingSingleThrea
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public void sendBaoGaoMessage(String messageText) {
+        SendMessage message = SendMessage // Create a message object
+                .builder()
+                .chatId(baogaoChatId)
+                .text(messageText)
+                .parseMode("MarkdownV2")
+                .build();
+
+        try {
+            telegramClient.execute(message);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+
+        SendMessage qunzuMessage = SendMessage // Create a message object
+                .builder()
+                .chatId(qunzuChatId)
+                .text(messageText)
+                .parseMode("MarkdownV2")
+                .build();
+
+        try {
+            telegramClient.execute(qunzuMessage);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
