@@ -18,7 +18,7 @@ public class BotController {
         blackGodBot.sendMessage(message);
     }
 
-    @PostMapping("报告")
+    @PostMapping("baogao")
     public void sendBaoGaoMessage(@RequestBody String message) {
         blackGodBot.sendBaoGaoMessage(message);
     }

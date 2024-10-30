@@ -17,12 +17,18 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 public class BlackGodBot implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
 
     private final TelegramClient telegramClient;
-
+    /**
+     * 公榜
+     */
     private final String chatId = "-1002205757052";
-
-    private final String baogaoChatId="-1002152980524";
-
-    private final String qunzuChatId="-1002298376382";
+    /**
+     * 报告频道
+     */
+    private final String baogaoChatId = "-1002152980524";
+    /**
+     * 群
+     */
+    private final String qunzuChatId = "-1002298376382";
 
     public BlackGodBot() {
         telegramClient = new OkHttpTelegramClient(getBotToken());
@@ -74,7 +80,6 @@ public class BlackGodBot implements SpringLongPollingBot, LongPollingSingleThrea
                 .builder()
                 .chatId(baogaoChatId)
                 .text(messageText)
-                .parseMode("MarkdownV2")
                 .build();
 
         try {
@@ -87,7 +92,6 @@ public class BlackGodBot implements SpringLongPollingBot, LongPollingSingleThrea
                 .builder()
                 .chatId(qunzuChatId)
                 .text(messageText)
-                .parseMode("MarkdownV2")
                 .build();
 
         try {
