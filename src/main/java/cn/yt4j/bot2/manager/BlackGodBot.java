@@ -1,12 +1,13 @@
 package cn.yt4j.bot2.manager;
 
-import lombok.RequiredArgsConstructor;
+import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
 import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
+import org.telegram.telegrambots.meta.api.methods.ForwardMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -20,7 +21,7 @@ public class BlackGodBot implements SpringLongPollingBot, LongPollingSingleThrea
     /**
      * 公榜
      */
-    private final String chatId = "-1002205757052";
+    private final String gongBangChatId = "-1002205757052";
     /**
      * 报告频道
      */
@@ -39,8 +40,23 @@ public class BlackGodBot implements SpringLongPollingBot, LongPollingSingleThrea
         if (update.hasChannelPost() && update.getChannelPost().hasText()) {
             // Set variables
             String message_text = update.getChannelPost().getText();
-            long chat_id = update.getChannelPost().getChatId();
-            log.info("Received from " + chat_id + ": " + message_text);
+            Long chatId = update.getChannelPost().getChatId();
+            log.info("Received from " + chatId + ": " + message_text);
+
+            if (ObjectUtil.equals(chatId.toString(), baogaoChatId)){
+                ForwardMessage forwardMessage = ForwardMessage // Create a forward message object
+                        .builder()
+                        .chatId(qunzuChatId)
+                        .fromChatId(baogaoChatId)
+                        .messageId(update.getChannelPost().getMessageId())
+                        .build();
+                try {
+                    telegramClient.execute(forwardMessage);
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
         }
 
         if (update.hasMessage() && update.getMessage().isSuperGroupMessage()) {
@@ -63,7 +79,7 @@ public class BlackGodBot implements SpringLongPollingBot, LongPollingSingleThrea
     public void sendMessage(String messageText) {
         SendMessage message = SendMessage // Create a message object
                 .builder()
-                .chatId(chatId)
+                .chatId(gongBangChatId)
                 .text(messageText)
                 .parseMode("MarkdownV2")
                 .build();
@@ -88,16 +104,5 @@ public class BlackGodBot implements SpringLongPollingBot, LongPollingSingleThrea
             throw new RuntimeException(e);
         }
 
-        SendMessage qunzuMessage = SendMessage // Create a message object
-                .builder()
-                .chatId(qunzuChatId)
-                .text(messageText)
-                .build();
-
-        try {
-            telegramClient.execute(qunzuMessage);
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
