@@ -8,6 +8,7 @@ import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsume
 import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.ForwardMessage;
+import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -89,6 +90,7 @@ public class BlackGodBot implements SpringLongPollingBot, LongPollingSingleThrea
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     public void sendBaoGaoMessage(String messageText) {
