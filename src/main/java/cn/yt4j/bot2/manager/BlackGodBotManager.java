@@ -1,7 +1,9 @@
 package cn.yt4j.bot2.manager;
 
+import cn.yt4j.bot2.entity.MuteContent;
 import cn.yt4j.bot2.entity.TelegramGroupChannel;
 import cn.yt4j.bot2.entity.TelegramUser;
+import cn.yt4j.bot2.service.MuteContentService;
 import cn.yt4j.bot2.service.TelegramGroupChannelService;
 import cn.yt4j.bot2.service.TelegramUserService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -31,6 +33,9 @@ public class BlackGodBotManager {
 
 	@Autowired
 	private TelegramUserService telegramUserService;
+
+	@Autowired
+	private MuteContentService muteContentService;
 
 	@Async
 	public void sendMessage(String messageText, Long chatId, Boolean isMd) {
@@ -96,6 +101,14 @@ public class BlackGodBotManager {
 		groupChannel.setType(chat.getType());
 		groupChannel.setCreateTime(LocalDateTime.now());
 		telegramGroupChannelService.save(groupChannel);
+	}
+
+	@Async
+	public void storeMuteInfo(String text, String nickName) {
+		MuteContent muteContent = new MuteContent();
+		muteContent.setContent(text);
+		muteContent.setCreateTime(LocalDateTime.now());
+		this.muteContentService.save(muteContent);
 	}
 
 }

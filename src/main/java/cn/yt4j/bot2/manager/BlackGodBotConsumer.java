@@ -106,6 +106,7 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 			User originalUser = message.getReplyToMessage().getFrom(); // 获取被回复的原始消息发送者
 			// 禁止发送消息
 			String text = message.getText();
+			String replayText = message.getReplyToMessage().getText();
 			try {
 				// 获取回复人在群组中的身份
 				GetChatMember getChatMember = new GetChatMember(chatId.toString(), replyUser.getId());
@@ -131,6 +132,12 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 					restrictChatMember.setUntilDate((int) (System.currentTimeMillis() / 1000) + 3600); // 设置限制时长（1小时）
 
 					telegramClient.execute(restrictChatMember);
+
+					DeleteMessage myMessage = new DeleteMessage(chatId.toString(), message.getMessageId());
+					telegramClient.execute(myMessage);
+
+					this.blackGodBotManager.storeMuteInfo(replayText,
+							originalUser.getFirstName() + originalUser.getLastName());
 				}
 			}
 			catch (TelegramApiException e) {
