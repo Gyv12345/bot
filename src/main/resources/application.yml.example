@@ -1,6 +1,11 @@
 spring:
   application:
     name: bot2
+  datasource:
+    url: jdbc:mysql://localhost:3306/bot?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf-8&autoReconnect=true&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
 yt4j:
   telegram:
     token: your_bot_token

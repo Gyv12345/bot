@@ -4,6 +4,8 @@ import cn.yt4j.bot2.service.BlackGodBotService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.chat.Chat;
+
 @Service
 public class BlackGodBotServiceImpl implements BlackGodBotService {
 
@@ -25,6 +27,16 @@ public class BlackGodBotServiceImpl implements BlackGodBotService {
     @Async
     @Override
     public void processSpamInfo(Update update) {
+
+    }
+
+    @Override
+    public void saveMember() {
+
+    }
+
+    @Override
+    public void saveGroup(Chat chat) {
 
     }
 }

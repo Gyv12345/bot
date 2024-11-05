@@ -1,6 +1,7 @@
 package cn.yt4j.bot2.service;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.chat.Chat;
 
 public interface BlackGodBotService {
     /**
@@ -32,4 +33,15 @@ public interface BlackGodBotService {
      * @param update
      */
     void processSpamInfo(Update update);
+
+    /**
+     *
+     */
+    void saveMember();
+
+    /**
+     * 保存群组信息
+     * @param chat
+     */
+    void saveGroup(Chat chat);
 }
