@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: bot2
+yt4j:
+  telegram:
+    token: your_bot_token
+    bot-username: your_bot_username
