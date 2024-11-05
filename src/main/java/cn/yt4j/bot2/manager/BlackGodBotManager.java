@@ -1,41 +1,44 @@
-package cn.yt4j.bot2.service.impl;
+package cn.yt4j.bot2.manager;
 
-import cn.yt4j.bot2.service.BlackGodBotService;
+import cn.yt4j.bot2.config.TelegramProperty;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.chat.Chat;
+import org.telegram.telegrambots.meta.generics.TelegramClient;
 
-@Service
-public class BlackGodBotServiceImpl implements BlackGodBotService {
+@Component
+public class BlackGodBotManager {
 
-	@Override
+	@Autowired
+	private TelegramClient telegramClient;
+
+	@Autowired
+	private TelegramProperty telegramProperty;
+
 	public void sendMessage(String messageText, Long chatId, Boolean isMd) {
 
 	}
 
-	@Override
 	public void forwardMessage(String messageText, Long chatId, Long fromChatId, Boolean isMd) {
 
 	}
 
-	@Override
 	public void muteUser(Long chatId, Long userId) {
 
 	}
 
 	@Async
-	@Override
+
 	public void processSpamInfo(Update update) {
 
 	}
 
-	@Override
 	public void saveMember() {
 
 	}
 
-	@Override
 	public void saveGroup(Chat chat) {
 
 	}
