@@ -1,3 +1,7 @@
 spring:
   application:
     name: bot2
+yt4j:
+  telegram:
+    token: 8090102155:AAHGtKI_rie3E2PdT6W2Wxkzuxl-pmLiddY
+    bot-username: BlackGodWuKongBot

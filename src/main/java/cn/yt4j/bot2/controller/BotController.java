@@ -1,9 +1,7 @@
 package cn.yt4j.bot2.controller;
 
-import cn.yt4j.bot2.manager.BlackGodBot;
+import cn.yt4j.bot2.service.BlackGodBotService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
@@ -11,15 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("bot")
 public class BotController {
 
-    private final BlackGodBot blackGodBot;
+    private final BlackGodBotService blackGodBotService;
 
-    @PostMapping("gongbang")
-    public void sendMessage(@RequestBody String message) {
-        blackGodBot.sendMessage(message);
-    }
-
-    @PostMapping("baogao")
-    public void sendBaoGaoMessage(@RequestBody String message) {
-        blackGodBot.sendBaoGaoMessage(message);
-    }
 }

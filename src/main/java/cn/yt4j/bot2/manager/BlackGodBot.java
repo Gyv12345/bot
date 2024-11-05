@@ -1,24 +1,27 @@
 package cn.yt4j.bot2.manager;
 
-import cn.hutool.core.util.ObjectUtil;
+import cn.yt4j.bot2.config.TelegramProperty;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
 import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
-import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
-import org.telegram.telegrambots.meta.api.methods.ForwardMessage;
-import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChatMember;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 @Component
 @Slf4j
-public class BlackGodBot implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
+public class BlackGodBot implements SpringLongPollingBot {
 
-    private final TelegramClient telegramClient;
+    @Autowired
+    private TelegramClient telegramClient;
+
+    @Autowired
+    private BlackGodBotConsumer consumer;
+
+    @Autowired
+    private TelegramProperty telegramProperty;
     /**
      * 公榜
      */
@@ -32,49 +35,15 @@ public class BlackGodBot implements SpringLongPollingBot, LongPollingSingleThrea
      */
     private final String qunzuChatId = "-1002298376382";
 
-    public BlackGodBot() {
-        telegramClient = new OkHttpTelegramClient(getBotToken());
-    }
-
-    @Override
-    public void consume(Update update) {
-        if (update.hasChannelPost() && update.getChannelPost().hasText()) {
-            // Set variables
-            String message_text = update.getChannelPost().getText();
-            Long chatId = update.getChannelPost().getChatId();
-            log.info("Received from " + chatId + ": " + message_text);
-
-            if (ObjectUtil.equals(chatId.toString(), baogaoChatId)){
-                ForwardMessage forwardMessage = ForwardMessage // Create a forward message object
-                        .builder()
-                        .chatId(qunzuChatId)
-                        .fromChatId(baogaoChatId)
-                        .messageId(update.getChannelPost().getMessageId())
-                        .build();
-                try {
-                    telegramClient.execute(forwardMessage);
-                } catch (TelegramApiException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-        }
-
-        if (update.hasMessage() && update.getMessage().isSuperGroupMessage()) {
-            String groupMessage = update.getMessage().getText(); // 获取群组消息内容
-            long chatId = update.getMessage().getChatId(); // 获取群组的 chatId
-            log.info("Received from " + chatId + ": " + groupMessage);
-        }
-    }
 
     @Override
     public String getBotToken() {
-        return "8090102155:AAHGtKI_rie3E2PdT6W2Wxkzuxl-pmLiddY";
+        return telegramProperty.getToken();
     }
 
     @Override
     public LongPollingUpdateConsumer getUpdatesConsumer() {
-        return this;
+        return consumer;
     }
 
     public void sendMessage(String messageText) {
