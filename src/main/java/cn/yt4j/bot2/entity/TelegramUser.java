@@ -14,24 +14,19 @@ import java.time.LocalDateTime;
  * 电报用户表(TelegramUser)表实体类
  *
  * @author makejava
- * @since 2024-11-05 17:21:04
+ * @since 2024-11-05 17:24:16
  */
 @Data
 public class TelegramUser implements Serializable {
 
 	@Serial
-	private static final long serialVersionUID = 178122273834395437L;
+	private static final long serialVersionUID = -16460404609609349L;
 
 	/**
 	 * 用户唯一标识符
 	 */
 	@TableId(value = "id", type = IdType.ASSIGN_ID)
 	private Long id;
-
-	/**
-	 * 租户标识符
-	 */
-	private Long tenantId;
 
 	/**
 	 * 电报用户唯一ID
@@ -64,25 +59,10 @@ public class TelegramUser implements Serializable {
 	private String status;
 
 	/**
-	 * 删除标志（0代表存在 1代表删除）
-	 */
-	private String delFlag;
-
-	/**
-	 * 创建者
-	 */
-	private Long createBy;
-
-	/**
 	 * 创建时间
 	 */
 	@TableField(fill = FieldFill.INSERT)
 	private LocalDateTime createTime;
-
-	/**
-	 * 更新者
-	 */
-	private Long updateBy;
 
 	/**
 	 * 更新时间
