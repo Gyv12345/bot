@@ -9,5 +9,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("bot")
 public class BotController {
 
-
 }

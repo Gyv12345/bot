@@ -30,6 +30,9 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 	@Autowired
 	private TelegramProperty telegramProperty;
 
+	@Autowired
+	private BlackGodBotManager blackGodBotManager;
+
 	/**
 	 * 公榜
 	 */
@@ -54,9 +57,7 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 			log.info("Received from " + chatId + ": " + messageText);
 
 			if (ObjectUtil.equals(chatId.toString(), baogaoChatId)) {
-				ForwardMessage forwardMessage = ForwardMessage // Create a forward message
-																// object
-					.builder()
+				ForwardMessage forwardMessage = ForwardMessage.builder()
 					.chatId(qunzuChatId)
 					.fromChatId(baogaoChatId)
 					.messageId(update.getChannelPost().getMessageId())
@@ -86,7 +87,9 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 						Chat chat = update.getMessage().getChat();
 						// 新的一个群组 或者 频道，将其信息保存到数据库
 						log.info("New chat: {}, chatId: {}", chat.getTitle(), chatId);
+						blackGodBotManager.saveGroup(chat);
 					}
+
 				}
 			}
 			// 检查是否为回复消息，如果是，则判断是否为禁止发送消息

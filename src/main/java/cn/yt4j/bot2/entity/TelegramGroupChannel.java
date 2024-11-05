@@ -11,50 +11,50 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 电报用户表(TelegramUser)表实体类
+ * 电报群组频道表(TelegramGroupChannel)表实体类
  *
  * @author makejava
- * @since 2024-11-05 17:42:54
+ * @since 2024-11-05 17:42:57
  */
 @Data
-public class TelegramUser implements Serializable {
+public class TelegramGroupChannel implements Serializable {
 
 	@Serial
-	private static final long serialVersionUID = -92358920812123046L;
+	private static final long serialVersionUID = 412009258178105175L;
 
 	/**
-	 * 用户唯一标识符
+	 * 群组或频道唯一标识符
 	 */
 	@TableId(value = "id", type = IdType.ASSIGN_ID)
 	private Long id;
 
 	/**
-	 * 电报用户唯一ID
+	 * 电报群组或频道ID
 	 */
-	private Long telegramUserId;
+	private Long telegramGroupId;
 
 	/**
-	 * 电报用户名
+	 * 群组或频道名称
 	 */
-	private String username;
+	private String groupName;
 
 	/**
-	 * 用户显示名称
+	 * 群组或频道描述
 	 */
-	private String displayName;
+	private String description;
 
 	/**
-	 * 用户手机号
+	 * 类型（G表示群组，C表示频道）
 	 */
-	private String phoneNumber;
+	private String type;
 
 	/**
-	 * 用户头像URL
+	 * 成员数量
 	 */
-	private String profilePhoto;
+	private Integer memberCount;
 
 	/**
-	 * 用户状态（0正常 1停用）
+	 * 状态（0正常 1停用）
 	 */
 	private String status;
 

@@ -3,8 +3,8 @@
 <mapper namespace="cn.yt4j.bot2.mapper.TelegramUserMapper">
 
     <resultMap type="cn.yt4j.bot2.entity.TelegramUser" id="TelegramUserMap">
-        <result property="id" column="id" />
-        <result property="telegramUserId" column="telegram_user_id" jdbcType="VARCHAR"/>
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="telegramUserId" column="telegram_user_id" jdbcType="INTEGER"/>
         <result property="username" column="username" jdbcType="VARCHAR"/>
         <result property="displayName" column="display_name" jdbcType="VARCHAR"/>
         <result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
