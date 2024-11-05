@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * @since 2024-11-05 16:32:39
  */
 @Service
-public class TelegramUserServiceImpl extends ServiceImpl<TelegramUserMapper, TelegramUser> implements TelegramUserService {
+public class TelegramUserServiceImpl extends ServiceImpl<TelegramUserMapper, TelegramUser>
+		implements TelegramUserService {
 
 }
-

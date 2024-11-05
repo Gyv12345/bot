@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "yt4j.telegram")
 public class TelegramProperty {
 
-    private String token;
+	private String token;
 
-    private String botUsername;
+	private String botUsername;
+
 }

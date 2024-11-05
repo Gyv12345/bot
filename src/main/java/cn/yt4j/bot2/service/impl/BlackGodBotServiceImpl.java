@@ -9,34 +9,35 @@ import org.telegram.telegrambots.meta.api.objects.chat.Chat;
 @Service
 public class BlackGodBotServiceImpl implements BlackGodBotService {
 
-    @Override
-    public void sendMessage(String messageText, Long chatId, Boolean isMd) {
+	@Override
+	public void sendMessage(String messageText, Long chatId, Boolean isMd) {
 
-    }
+	}
 
-    @Override
-    public void forwardMessage(String messageText, Long chatId, Long fromChatId, Boolean isMd) {
+	@Override
+	public void forwardMessage(String messageText, Long chatId, Long fromChatId, Boolean isMd) {
 
-    }
+	}
 
-    @Override
-    public void muteUser(Long chatId, Long userId) {
+	@Override
+	public void muteUser(Long chatId, Long userId) {
 
-    }
+	}
 
-    @Async
-    @Override
-    public void processSpamInfo(Update update) {
+	@Async
+	@Override
+	public void processSpamInfo(Update update) {
 
-    }
+	}
 
-    @Override
-    public void saveMember() {
+	@Override
+	public void saveMember() {
 
-    }
+	}
 
-    @Override
-    public void saveGroup(Chat chat) {
+	@Override
+	public void saveGroup(Chat chat) {
 
-    }
+	}
+
 }

@@ -9,12 +9,12 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 @Configuration
 public class BlackGodTelegramClientConfig {
 
-    @Autowired
-    private TelegramProperty telegramProperty;
+	@Autowired
+	private TelegramProperty telegramProperty;
 
-    @Bean
-    public TelegramClient getClient() {
-        return new OkHttpTelegramClient(telegramProperty.getToken());
-    }
+	@Bean
+	public TelegramClient getClient() {
+		return new OkHttpTelegramClient(telegramProperty.getToken());
+	}
 
 }
