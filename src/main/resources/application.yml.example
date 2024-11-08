@@ -10,3 +10,5 @@ yt4j:
   telegram:
     token: your_bot_token
     bot-username: your_bot_username
+    coze-ai-token: coze的token
+    coze-bot-id: code的bot id

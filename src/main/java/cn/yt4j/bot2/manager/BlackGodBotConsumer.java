@@ -1,8 +1,18 @@
 package cn.yt4j.bot2.manager;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.yt4j.bot2.config.TelegramProperty;
+import cn.yt4j.bot2.entity.bo.AdditionalMessagesBo;
+import cn.yt4j.bot2.entity.bo.CozeApiBo;
+import cn.yt4j.bot2.entity.vo.CozeApiVo;
+import cn.yt4j.bot2.entity.vo.CozeListVo;
+import cn.yt4j.bot2.entity.vo.DataVo;
+import cn.yt4j.bot2.util.CozeApiUtil;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -22,6 +32,10 @@ import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 @Component
 @Slf4j
 public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsumer {
@@ -34,6 +48,15 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 
 	@Autowired
 	private BlackGodBotManager blackGodBotManager;
+
+	@Autowired
+	private ScheduledExecutorService scheduledExecutorService;
+
+	@Autowired
+	private CozeApiUtil cozeApiUtil;
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	/**
 	 * 公榜
@@ -94,7 +117,72 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 			}
 			// 检查是否为回复消息，如果是，则判断是否为禁止发送消息
 			checkAndRestrict(update.getMessage());
+
+			processSpamInfo(update);
 		}
+	}
+
+	/**
+	 * AI处理垃圾信息
+	 */
+	@Async
+	@SneakyThrows
+	public void processSpamInfo(Update update) {
+		Message message = update.getMessage();
+		Long chatId = message.getChatId();
+		Long userId = message.getFrom().getId();
+		// 获取用户在群组中的角色
+		GetChatMember getChatMember = new GetChatMember(chatId.toString(), userId);
+
+		ChatMember chatMember = telegramClient.execute(getChatMember);
+		// 用户状态: creator, administrator, member,restricted, left, kicked
+		String status = chatMember.getStatus();
+
+		if (isAdminOrBot(status, chatMember)) {
+			return;
+		}
+		User user = chatMember.getUser();
+		CozeApiBo cozeApiBo = new CozeApiBo();
+		cozeApiBo.setBotId(telegramProperty.getCozeBotId());
+		AdditionalMessagesBo additionalMessagesDTO = new AdditionalMessagesBo();
+		additionalMessagesDTO.setContent(user.getFirstName() + user.getLastName() + ":" + message.getText());
+		cozeApiBo.setAdditionalMessages(ListUtil.of(additionalMessagesDTO));
+		String result = cozeApiUtil.question(cozeApiBo);
+		CozeApiVo<DataVo> cozeApiVo = objectMapper.readValue(result, new TypeReference<CozeApiVo<DataVo>>() {
+		});
+
+		scheduledExecutorService.schedule(() -> {
+			CozeApiVo<DataVo> cozeVo = cozeApiVo;
+			String answer = cozeApiUtil.getAnswer(cozeVo.getData().getId(), cozeVo.getData().getConversationId());
+			try {
+				CozeApiVo<List<CozeListVo>> cozeApiList = objectMapper.readValue(answer,
+						new TypeReference<CozeApiVo<List<CozeListVo>>>() {
+						});
+				for (CozeListVo datum : cozeApiList.getData()) {
+					if (datum.getType().equals("answer")) {
+						String content = datum.getContent();
+						log.info("AI:" + content);
+						if (Integer.valueOf(content) > 8) {
+							DeleteMessage deleteMessage = new DeleteMessage(chatId.toString(), message.getMessageId());
+							telegramClient.execute(deleteMessage);
+						}
+					}
+				}
+			}
+			catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+
+		}, 2, TimeUnit.SECONDS);
+
+	}
+
+	/**
+	 * 判断用户是否为管理员或机器人
+	 */
+	private boolean isAdminOrBot(String status, ChatMember chatMember) {
+		// 检查用户状态
+		return status.equals("administrator") || status.equals("creator") || chatMember.getUser().getIsBot();
 	}
 
 	@Async

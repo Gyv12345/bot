@@ -106,7 +106,7 @@ public class BlackGodBotManager {
 	@Async
 	public void storeMuteInfo(String text, String nickName) {
 		MuteContent muteContent = new MuteContent();
-		muteContent.setContent(text);
+		muteContent.setContent("确定:" + nickName + ":" + text);
 		muteContent.setCreateTime(LocalDateTime.now());
 		this.muteContentService.save(muteContent);
 	}

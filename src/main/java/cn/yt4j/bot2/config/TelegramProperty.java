@@ -13,4 +13,10 @@ public class TelegramProperty {
 
 	private String botUsername;
 
+	private Boolean enable;
+
+	private String cozeAiToken;
+
+	private String cozeBotId;
+
 }
