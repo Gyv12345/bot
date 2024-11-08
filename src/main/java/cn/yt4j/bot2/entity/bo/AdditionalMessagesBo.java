@@ -6,6 +6,10 @@ import lombok.Data;
 @Data
 public class AdditionalMessagesBo {
 
+	public AdditionalMessagesBo(String content) {
+		this.content = content;
+	}
+
 	@JsonProperty("role")
 	private String role = "user";
 
