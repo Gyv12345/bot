@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * coze api 请求体
+ * @author gyv12345@163.com
+ */
 @NoArgsConstructor
 @Data
 public class CozeApiBo {

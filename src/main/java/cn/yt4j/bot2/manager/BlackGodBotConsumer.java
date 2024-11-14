@@ -32,6 +32,10 @@ import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 机器人消息处理器，也是最核心的消息处理器
+ * @author gyv12345@163.com
+ */
 @Component
 @Slf4j
 public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsumer {

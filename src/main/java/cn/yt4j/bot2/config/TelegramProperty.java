@@ -4,6 +4,10 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+/**
+ * 机器人配置
+ * @author gyv12345@163.com
+ */
 @Component
 @Data
 @ConfigurationProperties(prefix = "yt4j.telegram")

@@ -6,6 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
+/**
+ * 机器人客户端配置
+ * @author gyv12345@163.com
+ */
 @Configuration
 public class BlackGodTelegramClientConfig {
 

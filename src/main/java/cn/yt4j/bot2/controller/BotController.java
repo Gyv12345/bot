@@ -3,12 +3,12 @@ package cn.yt4j.bot2.controller;
 import cn.yt4j.bot2.config.TelegramProperty;
 import cn.yt4j.bot2.manager.BlackGodBotManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+/**
+ * 机器人
+ * @author gyv12345@163.com
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("bot")

@@ -13,6 +13,10 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * coze请求工具
+ * @author gyv12345@163.com
+ */
 @Component
 @Slf4j
 public class CozeApiUtil {

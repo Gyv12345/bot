@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * coze 对话列表
+ * @author gyv12345@163.com
+ */
 @NoArgsConstructor
 @Data
 public class CozeListVo {

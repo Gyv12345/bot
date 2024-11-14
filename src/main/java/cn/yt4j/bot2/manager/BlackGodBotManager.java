@@ -13,6 +13,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
+/**
+ * 机器人manager层，本来想着操作数据库的，但是感觉我们的是单体的服务，直接改就行了
+ */
 @Slf4j
 @Component
 public class BlackGodBotManager {
