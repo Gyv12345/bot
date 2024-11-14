@@ -99,10 +99,13 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 		checkAndRestrict(message);
 
 		// 处理垃圾信息
-		String userContent = chatMember.getUser().getFirstName()
-				+ (ObjectUtil.isNotEmpty(chatMember.getUser().getLastName()) ? chatMember.getUser().getLastName() : "")
-				+ ":" + message.getText();
-		processSpamInfo(message, chatMember, userContent, message.getChatId());
+		if (telegramProperty.getUseAiDel()){
+			String userContent = chatMember.getUser().getFirstName()
+					+ (ObjectUtil.isNotEmpty(chatMember.getUser().getLastName()) ? chatMember.getUser().getLastName() : "")
+					+ ":" + message.getText();
+			processSpamInfo(message, chatMember, userContent, message.getChatId());
+		}
+
 	}
 
 	@Async
