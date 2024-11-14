@@ -1,7 +1,6 @@
 
 package cn.yt4j.bot2.entity;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -62,11 +61,6 @@ public class Result<T> implements Serializable {
 
 	public static Result<String> success(String message) {
 		return result(message, HttpStatus.OK.value(), null);
-	}
-
-	public static <T> Result<PageResult<T>> ok(IPage<T> page) {
-		PageResult<T> data = new PageResult<>(page);
-		return result(data, HttpStatus.OK.value(), "查询成功");
 	}
 
 	public static <T> Result<T> ok(T data, String message) {

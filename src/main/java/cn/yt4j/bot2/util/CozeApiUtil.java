@@ -30,7 +30,7 @@ public class CozeApiUtil {
 	 */
 	@SneakyThrows
 	public String question(Object body) {
-		HttpRequest request = new HttpRequest("https://api.coze.com/v3/chat");
+		HttpRequest request = new HttpRequest("https://api.coze." + telegramProperty.getCozeCn() + "/v3/chat");
 		request.setMethod(Method.POST);
 
 		String contentType = "application/json";
@@ -52,7 +52,8 @@ public class CozeApiUtil {
 	 * 获取答案
 	 */
 	public String getAnswer(String chatId, String conversationId) {
-		HttpRequest request = new HttpRequest("https://api.coze.com/v3/chat/message/list");
+		HttpRequest request = new HttpRequest(
+				"https://api.coze." + telegramProperty.getCozeCn() + "/v3/chat/message/list");
 		request.setMethod(Method.GET);
 
 		String contentType = "application/json";
@@ -66,7 +67,7 @@ public class CozeApiUtil {
 
 		request.form(map);
 		String result = request.execute().body();
-		log.info("调用COZE返回：{}", result);
+		log.info("获取COZE调用结果：{}", result);
 		return result;
 	}
 

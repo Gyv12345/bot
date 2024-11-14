@@ -14,7 +14,7 @@ public class CozeApiBo {
 	private String botId;
 
 	@JsonProperty("user_id")
-	private String userId = "BlackGodBot";
+	private String userId;
 
 	@JsonProperty("stream")
 	private Boolean stream = false;

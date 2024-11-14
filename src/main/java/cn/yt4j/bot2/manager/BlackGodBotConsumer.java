@@ -1,6 +1,5 @@
 package cn.yt4j.bot2.manager;
 
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.yt4j.bot2.config.TelegramProperty;
@@ -25,7 +24,6 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.objects.ChatPermissions;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMember;
-import org.telegram.telegrambots.meta.api.objects.chatmember.ChatMemberUpdated;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
@@ -45,9 +43,6 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 	private TelegramProperty telegramProperty;
 
 	@Autowired
-	private BlackGodBotManager blackGodBotManager;
-
-	@Autowired
 	private ScheduledExecutorService scheduledExecutorService;
 
 	@Autowired
@@ -56,14 +51,6 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	private static final String GONG_BANG_CHAT_ID = "-1002205757052";
-
-	private static final String BAO_GAO_CHAT_ID = "-1002152980524";
-
-	private static final String QUN_ZU_CHAT_ID = "-1002298376382";
-
-	private static final int MESSAGE_DELETE_THRESHOLD = 6;
-
 	@Override
 	public void consume(Update update) {
 		if (update == null)
@@ -71,12 +58,8 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 
 		// 处理频道消息
 		if (update.hasChannelPost() && update.getChannelPost().hasText()) {
+			// 频道消息转发
 			handleChannelPost(update);
-		}
-
-		// 处理成员更新
-		if (update.hasMyChatMember()) {
-			handleChatMemberUpdate(update);
 		}
 
 		// 处理群组消息
@@ -90,51 +73,46 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 		Long chatId = update.getChannelPost().getChatId();
 		log.info("Received from " + chatId + ": " + messageText);
 
-		if (ObjectUtil.equals(chatId.toString(), BAO_GAO_CHAT_ID)) {
-			forwardMessage(BAO_GAO_CHAT_ID, QUN_ZU_CHAT_ID, update.getChannelPost().getMessageId());
+		if (ObjectUtil.equals(chatId.toString(), telegramProperty.getReportChannelId())) {
+			forwardMessage(telegramProperty.getReportChannelId().toString(), telegramProperty.getGroupId().toString(),
+					update.getChannelPost().getMessageId());
 		}
 	}
 
-	private void handleChatMemberUpdate(Update update) {
-		ChatMemberUpdated myChatMember = update.getMyChatMember();
-		String status = myChatMember.getNewChatMember().getStatus();
-		if ("member".equals(status) || "administrator".equals(status)) {
-			blackGodBotManager.saveGroup(myChatMember.getChat());
-		}
-	}
-
+	@SneakyThrows
 	private void handleGroupMessage(Update update) {
 		Message message = update.getMessage();
-		log.info("Received from " + message.getChatId() + ": " + message.getText());
+		GetChatMember getChatMember = new GetChatMember(message.getChatId().toString(), message.getFrom().getId());
+		ChatMember chatMember = telegramClient.execute(getChatMember);
 
-		if (CollectionUtil.isNotEmpty(message.getNewChatMembers())) {
-			// 可处理新成员加入逻辑
-		}
+		log.info("chatId:{},messageId:{},username:{},text:{}", message.getChatId(), message.getMessageId(), chatMember
+			.getUser()
+			.getFirstName()
+				+ (ObjectUtil.isNotEmpty(chatMember.getUser().getLastName()) ? chatMember.getUser().getLastName() : ""),
+				message.getText());
 
 		// 检查并限制回复消息
 		checkAndRestrict(message);
 
 		// 处理垃圾信息
-		processSpamInfo(update);
+		String userContent = chatMember.getUser().getFirstName()
+				+ (ObjectUtil.isNotEmpty(chatMember.getUser().getLastName()) ? chatMember.getUser().getLastName() : "")
+				+ ":" + message.getText();
+		processSpamInfo(message, chatMember, userContent, message.getChatId());
 	}
 
 	@Async
 	@SneakyThrows
-	public void processSpamInfo(Update update) {
-		Message message = update.getMessage();
-		Long chatId = message.getChatId();
-		Long userId = message.getFrom().getId();
-
-		GetChatMember getChatMember = new GetChatMember(chatId.toString(), userId);
-		ChatMember chatMember = telegramClient.execute(getChatMember);
+	public void processSpamInfo(Message message, ChatMember chatMember, String userContent, Long chatId) {
 		String status = chatMember.getStatus();
 
 		if (isAdminOrBot(status, chatMember)) {
 			return;
 		}
+		if (!message.hasText()) {
+			return;
+		}
 
-		String userContent = chatMember.getUser().getFirstName() + " " + chatMember.getUser().getLastName() + ":"
-				+ message.getText();
 		CozeApiVo<DataVo> cozeApiVo = sendCozeApiRequest(userContent);
 
 		scheduledExecutorService.schedule(() -> {
@@ -146,6 +124,7 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 		CozeApiBo cozeApiBo = new CozeApiBo();
 		cozeApiBo.setBotId(telegramProperty.getCozeBotId());
 		cozeApiBo.setAdditionalMessages(ListUtil.of(new AdditionalMessagesBo(content)));
+		cozeApiBo.setUserId(telegramProperty.getBotUsername());
 		String result = cozeApiUtil.question(cozeApiBo);
 		return objectMapper.readValue(result, new TypeReference<CozeApiVo<DataVo>>() {
 		});
@@ -153,15 +132,20 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 
 	@SneakyThrows
 	private void handleCozeApiResponse(Long chatId, Message message, CozeApiVo<DataVo> cozeApiVo) {
-		String answer = cozeApiUtil.getAnswer(cozeApiVo.getData().getId(), cozeApiVo.getData().getConversationId());
-		CozeApiVo<List<CozeListVo>> cozeApiList = objectMapper.readValue(answer,
-				new TypeReference<CozeApiVo<List<CozeListVo>>>() {
-				});
+		log.info("chatId {}: ", cozeApiVo.getData().getId());
+		CozeApiVo<List<CozeListVo>> cozeApiList;
+		do {
+			String answer = cozeApiUtil.getAnswer(cozeApiVo.getData().getId(), cozeApiVo.getData().getConversationId());
+			cozeApiList = objectMapper.readValue(answer, new TypeReference<CozeApiVo<List<CozeListVo>>>() {
+			});
+			Thread.sleep(1000);
+		}
+		while (!ObjectUtil.isNotEmpty(cozeApiList.getData()));
 
 		cozeApiList.getData()
 			.stream()
 			.filter(datum -> "answer".equals(datum.getType())
-					&& Integer.parseInt(datum.getContent()) > MESSAGE_DELETE_THRESHOLD)
+					&& Integer.parseInt(datum.getContent()) > telegramProperty.getAiDelThreshold())
 			.forEach(datum -> deleteMessage(chatId, message.getMessageId()));
 	}
 

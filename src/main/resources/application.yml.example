@@ -1,14 +1,14 @@
 spring:
   application:
     name: bot2
-  datasource:
-    url: jdbc:mysql://localhost:3306/bot?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf-8&autoReconnect=true&allowPublicKeyRetrieval=true
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: root
 yt4j:
   telegram:
     token: your_bot_token
     bot-username: your_bot_username
     coze-ai-token: coze的token
     coze-bot-id: code的bot id
+    group-id: 群组ID
+    channel-id: 公榜频道ID
+    report-channel-id: 报告频道ID
+    use-ai-del: 是否使用AI删除
+    ai-del-threshold: AI删除的阈值
