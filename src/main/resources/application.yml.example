@@ -7,6 +7,7 @@ yt4j:
     bot-username: your_bot_username
     coze-ai-token: coze的token
     coze-bot-id: code的bot id
+    coze-cn: cn     com是国际版
     group-id: 群组ID
     channel-id: 公榜频道ID
     report-channel-id: 报告频道ID
