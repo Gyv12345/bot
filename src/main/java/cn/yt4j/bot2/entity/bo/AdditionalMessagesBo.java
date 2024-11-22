@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * coze查询内容
+ *
  * @author gyv12345@163.com
  */
 @Data

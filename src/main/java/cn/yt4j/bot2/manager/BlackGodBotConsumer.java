@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 机器人消息处理器，也是最核心的消息处理器
+ *
  * @author gyv12345@163.com
  */
 @Component
@@ -77,7 +78,7 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 		Long chatId = update.getChannelPost().getChatId();
 		log.info("Received from " + chatId + ": " + messageText);
 
-		if (ObjectUtil.equals(chatId.toString(), telegramProperty.getReportChannelId())) {
+		if (ObjectUtil.equals(chatId.toString(), telegramProperty.getReportChannelId().toString())) {
 			forwardMessage(telegramProperty.getReportChannelId().toString(), telegramProperty.getGroupId().toString(),
 					update.getChannelPost().getMessageId());
 		}
@@ -99,9 +100,10 @@ public class BlackGodBotConsumer implements LongPollingSingleThreadUpdateConsume
 		checkAndRestrict(message);
 
 		// 处理垃圾信息
-		if (telegramProperty.getUseAiDel()){
+		if (telegramProperty.getUseAiDel()) {
 			String userContent = chatMember.getUser().getFirstName()
-					+ (ObjectUtil.isNotEmpty(chatMember.getUser().getLastName()) ? chatMember.getUser().getLastName() : "")
+					+ (ObjectUtil.isNotEmpty(chatMember.getUser().getLastName()) ? chatMember.getUser().getLastName()
+							: "")
 					+ ":" + message.getText();
 			processSpamInfo(message, chatMember, userContent, message.getChatId());
 		}

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 机器人配置
+ *
  * @author gyv12345@163.com
  */
 @Component

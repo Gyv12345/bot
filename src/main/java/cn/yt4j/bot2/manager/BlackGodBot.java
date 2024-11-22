@@ -9,6 +9,7 @@ import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
 
 /**
  * 机器人注册
+ *
  * @author gyv12345@163.com
  */
 @Component

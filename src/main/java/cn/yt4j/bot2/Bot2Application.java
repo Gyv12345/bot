@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * 项目启动
+ *
  * @author gyv12345@163.com
  */
 @EnableScheduling
